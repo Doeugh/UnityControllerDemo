@@ -2,33 +2,45 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float moveSpeed = 5f;
+    public float acceleration = 10f;
+    public float maxSpeed = 5f;
 
     private Vector2 position;
+    private Vector2 velocity;
 
     void Start()
     {
         position = new Vector2(transform.position.x,transform.position.z);
+
+        velocity = Vector2.zero;
     }
+
 
     void Update()
     {
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
 
-        Vector2 movement = new Vector2(x, y);
+        Vector2 input = new Vector2(x, y);
 
-        if (movement.magnitude > 1f)
+        if (input.magnitude > 1f)
         {
-            movement.Normalize();
+            input.Normalize();
         }
 
-        Vector2 deltaPosition = movement * moveSpeed * Time.deltaTime;
+        Vector2 accelerationVector = input * acceleration;
 
-        position.x += deltaPosition.x;
-        position.y += deltaPosition.y;
+        velocity += accelerationVector * Time.deltaTime;
 
-        transform.position = new Vector3(position.x,transform.position.y,position.y
-        );
+        if (velocity.magnitude > maxSpeed)
+        {
+            velocity = velocity.normalized * maxSpeed;
+        }
+
+        Vector2 movement = velocity * Time.deltaTime;
+
+        position += movement;
+
+        transform.position = new Vector3(position.x,transform.position.y,position.y);
     }
 }
