@@ -4,6 +4,7 @@ public class PlayerController : MonoBehaviour
 {
     public float acceleration = 10f;
     public float maxSpeed = 5f;
+    public float friction = 5f;
 
     private Vector2 position;
     private Vector2 velocity;
@@ -31,6 +32,11 @@ public class PlayerController : MonoBehaviour
         Vector2 accelerationVector = input * acceleration;
 
         velocity += accelerationVector * Time.deltaTime;
+
+        if (input == Vector2.zero) 
+        { 
+            velocity = Vector2.MoveTowards(velocity, Vector2.zero, friction * Time.deltaTime); 
+        }
 
         if (velocity.magnitude > maxSpeed)
         {
